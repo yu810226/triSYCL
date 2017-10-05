@@ -23,14 +23,14 @@ namespace detail {
     OpenCL device
 
     In the general case, do not add any OpenCL address space qualifier */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 struct ocl_type { // NOTE: renamed from opencl_type because of MSVC bug
   using type = T;
 };
 
 /// Add an attribute for __constant address space
 template <typename T>
-struct ocl_type<T, constant_address_space> {
+struct ocl_type<T, access::constant_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -42,7 +42,7 @@ struct ocl_type<T, constant_address_space> {
 
 /// Add an attribute for __generic address space
 template <typename T>
-struct ocl_type<T, generic_address_space> {
+struct ocl_type<T, access::generic_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -54,7 +54,7 @@ struct ocl_type<T, generic_address_space> {
 
 /// Add an attribute for __global address space
 template <typename T>
-struct ocl_type<T, global_address_space> {
+struct ocl_type<T, access::global_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -66,7 +66,7 @@ struct ocl_type<T, global_address_space> {
 
 /// Add an attribute for __local address space
 template <typename T>
-struct ocl_type<T, local_address_space> {
+struct ocl_type<T, access::local_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -78,7 +78,7 @@ struct ocl_type<T, local_address_space> {
 
 /// Add an attribute for __private address space
 template <typename T>
-struct ocl_type<T, private_address_space> {
+struct ocl_type<T, access::private_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -91,16 +91,16 @@ struct ocl_type<T, private_address_space> {
 
 /* Forward declare some classes to allow some recursion in conversion
    operators */
-template <typename SomeType, address_space SomeAS>
+template <typename SomeType, access::address_space SomeAS>
 struct address_space_array;
 
-template <typename SomeType, address_space SomeAS>
+template <typename SomeType, access::address_space SomeAS>
 struct address_space_fundamental;
 
-template <typename SomeType, address_space SomeAS>
+template <typename SomeType, access::address_space SomeAS>
 struct address_space_object;
 
-template <typename SomeType, address_space SomeAS>
+template <typename SomeType, access::address_space SomeAS>
 struct address_space_ptr;
 
 /** Dispatch the address space implementation according to the requested type
@@ -110,7 +110,7 @@ struct address_space_ptr;
     \param AS is the address space to place the object into or to point to
     in the case of a pointer type
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 using addr_space =
   typename std::conditional<std::is_pointer<T>::value,
                             address_space_ptr<T, AS>,
@@ -131,7 +131,7 @@ using addr_space =
 
     \todo Verify/improve to deal with const/volatile?
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 struct address_space_base {
   /** Store the base type of the object
 
@@ -158,7 +158,7 @@ struct address_space_base {
 
     \param AS is the address space to place the object into
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 struct address_space_variable : public address_space_base<T, AS> {
   /** Store the base type of the object with OpenCL address space modifier
 
@@ -213,7 +213,7 @@ public:
 
     \todo Verify/improve to deal with const/volatile?
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 struct address_space_fundamental : public address_space_variable<T, AS> {
   /// Keep track of the base class as a short-cut
   using super = address_space_variable<T, AS>;
@@ -253,7 +253,7 @@ struct address_space_fundamental : public address_space_variable<T, AS> {
 
      Need to think further about it...
   */
-  template <typename SomeType, cl::sycl::address_space SomeAS>
+  template <typename SomeType, cl::sycl::access::address_space SomeAS>
   address_space_fundamental(address_space_fundamental<SomeType, SomeAS>& v)
   {
     /* Strangely I cannot have it working in the initializer instead, for
@@ -273,7 +273,7 @@ struct address_space_fundamental : public address_space_variable<T, AS> {
     All the address space pointers inherit from it, which makes trivial
     the implementation of cl::sycl::multi_ptr<T, AS>
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 struct address_space_ptr : public address_space_fundamental<T, AS> {
   // Verify that \a T is really a pointer
   static_assert(std::is_pointer<T>::value,
@@ -305,7 +305,7 @@ struct address_space_ptr : public address_space_fundamental<T, AS> {
 
     \param AS is the address space to place the object into
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 struct address_space_array : public address_space_variable<T, AS> {
   /// Keep track of the base class as a short-cut
   using super = address_space_variable<T, AS>;
@@ -345,7 +345,7 @@ struct address_space_array : public address_space_variable<T, AS> {
 
     \todo what about T having some final methods?
 */
-template <typename T, address_space AS>
+template <typename T, access::address_space AS>
 //struct address_space_object : public opencl_type<T, AS>::type,
 struct address_space_object : public ocl_type<T, AS>::type,
                               public address_space_base<T, AS> {
