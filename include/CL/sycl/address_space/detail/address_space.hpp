@@ -288,6 +288,8 @@ struct address_space_ptr : public address_space_fundamental<T, AS> {
   using pointer_t = typename super::address_space_fundamental::type;
   using reference_t = typename std::remove_pointer_t<pointer_t>&;
 
+  const access::address_space space = AS;
+
   /** Allow initialization of a pointer type from the address of an
       element with the same type and address space
   */
