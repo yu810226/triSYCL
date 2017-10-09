@@ -26,7 +26,7 @@ namespace sycl {
 /** Enumerate the different OpenCL 2 address spaces */
 namespace access {
 
-enum address_space {
+enum class address_space : int {
   constant_space,
   generic_space,
   global_space,
@@ -55,7 +55,7 @@ namespace sycl {
     \param T is the type of the object
 */
 template <typename T>
-using constant = detail::addr_space<T, access::constant_space>;
+using constant = detail::addr_space<T, access::address_space::constant_space>;
 
 
 /** Declare a variable to be in the OpenCL constant address space
@@ -71,7 +71,7 @@ using constant_ptr = constant<T*>;
     \param T is the type of the object
 */
 template <typename T>
-using generic = detail::addr_space<T, access::generic_space>;
+using generic = detail::addr_space<T, access::address_space::generic_space>;
 
 
 /** Declare a variable to be in the OpenCL global address space
@@ -79,7 +79,7 @@ using generic = detail::addr_space<T, access::generic_space>;
     \param T is the type of the object
 */
 template <typename T>
-using global = detail::addr_space<T, access::global_space>;
+using global = detail::addr_space<T, access::address_space::global_space>;
 
 
 /** Declare a variable to be in the OpenCL global address space
@@ -96,7 +96,7 @@ using global_ptr = global<T*>;
     \param T is the type of the object
 */
 template <typename T>
-using local = detail::addr_space<T, access::local_space>;
+using local = detail::addr_space<T, access::address_space::local_space>;
 
 
 /** Declare a variable to be in the OpenCL local address space
@@ -112,7 +112,7 @@ using local_ptr = local<T*>;
     \param T is the type of the object
 */
 template <typename T>
-using priv = detail::addr_space<T, access::private_space>;
+using priv = detail::addr_space<T, access::address_space::private_space>;
 
 
 /** Declare a variable to be in the OpenCL private address space

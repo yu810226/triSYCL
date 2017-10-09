@@ -30,7 +30,7 @@ struct ocl_type { // NOTE: renamed from opencl_type because of MSVC bug
 
 /// Add an attribute for __constant address space
 template <typename T>
-struct ocl_type<T, access::constant_space> {
+struct ocl_type<T, access::address_space::constant_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -42,7 +42,7 @@ struct ocl_type<T, access::constant_space> {
 
 /// Add an attribute for __generic address space
 template <typename T>
-struct ocl_type<T, access::generic_space> {
+struct ocl_type<T, access::address_space::generic_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -54,7 +54,7 @@ struct ocl_type<T, access::generic_space> {
 
 /// Add an attribute for __global address space
 template <typename T>
-struct ocl_type<T, access::global_space> {
+struct ocl_type<T, access::address_space::global_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -66,7 +66,7 @@ struct ocl_type<T, access::global_space> {
 
 /// Add an attribute for __local address space
 template <typename T>
-struct ocl_type<T, access::local_space> {
+struct ocl_type<T, access::address_space::local_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
@@ -78,7 +78,7 @@ struct ocl_type<T, access::local_space> {
 
 /// Add an attribute for __private address space
 template <typename T>
-struct ocl_type<T, access::private_space> {
+struct ocl_type<T, access::address_space::private_space> {
   using type = T
 #ifdef __SYCL_DEVICE_ONLY__
     /* Put the address space qualifier after the type so that we can
